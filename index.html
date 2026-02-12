@@ -1,78 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Pharous</title>
-
-  <link rel="stylesheet" href="style.css" />
-
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: black;
-      color: gold;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-    }
-
-    h1 {
-      font-size: 50px;
-      margin-bottom: 10px;
-      text-shadow: 0 0 20px gold;
-    }
-
-    h3 {
-      margin-bottom: 30px;
-      font-weight: normal;
-    }
-
-    input {
-      padding: 12px;
-      width: 250px;
-      border: 2px solid gold;
-      background: black;
-      color: gold;
-      outline: none;
-      font-size: 16px;
-    }
-
-    button {
-      padding: 12px 20px;
-      background: gold;
-      color: black;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-      margin-left: 10px;
-      transition: 0.3s;
-    }
-
-    button:hover {
-      background: #ffcc00;
-      transform: scale(1.05);
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Pharos</title>
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-  <h1>The Pharous</h1>
-  <h3>13 February 2026</h3>
+<div id="loginPage" class="card">
+  <h1>The Pharos</h1>
+  <input type="text" id="username" placeholder="اكتب اسمك">
+  <button onclick="requestAccess()">Request Access</button>
+</div>
 
-  <div>
-    <input type="text" placeholder="Enter Your Name" />
-    <button onclick="requestAccess()">Request Access</button>
-  </div>
+<div id="mainApp" class="hidden">
+  <header>
+    <h2 id="welcome"></h2>
+    <div id="points">Points: 0</div>
+  </header>
 
-  <!-- مهم جداً -->
-  <script type="module" src="app.js"></script>
+  <nav>
+    <button onclick="showSection('chat')">💬 Chat</button>
+    <button onclick="showSection('quiz')">🧠 Quiz</button>
+    <button onclick="showSection('leaderboard')">🏆 Leaderboard</button>
+    <button onclick="showSection('map')">🗺 Map</button>
+    <button onclick="alertGroup()" class="alertBtn">🚨 SOS</button>
+  </nav>
 
+  <!-- Chat -->
+  <section id="chat" class="section">
+    <div id="chatBox"></div>
+    <input type="text" id="messageInput" placeholder="اكتب رسالة">
+    <button onclick="sendMessage()">Send</button>
+  </section>
+
+  <!-- Quiz -->
+  <section id="quiz" class="section hidden">
+    <div id="quizBox"></div>
+  </section>
+
+  <!-- Leaderboard -->
+  <section id="leaderboard" class="section hidden">
+    <div id="leaderboardBox"></div>
+  </section>
+
+  <!-- Map -->
+  <section id="map" class="section hidden">
+    <iframe
+      width="100%"
+      height="400"
+      style="border:0"
+      loading="lazy"
+      allowfullscreen
+      src="https://www.google.com/maps?q=Alexandria&output=embed">
+    </iframe>
+  </section>
+</div>
+
+<script type="module" src="app.js"></script>
 </body>
 </html>
