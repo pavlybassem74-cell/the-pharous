@@ -1,0 +1,27 @@
+body {
+  margin:0;
+  background:#0E0E0E;
+  color:#D4AF37;
+  font-family: serif;
+  text-align:center;
+}
+
+h1 {
+  font-size:3rem;
+  text-shadow:0 0 20px #D4AF37;
+}
+
+input {
+  padding:10px;
+  margin:10px;
+  background:#111;
+  color:gold;
+  border:1px solid gold;
+}
+
+button {
+  padding:10px 20px;
+  background:gold;
+  border:none;
+  font-weight:bold;
+}
