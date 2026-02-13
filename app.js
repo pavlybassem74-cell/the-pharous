@@ -3,10 +3,7 @@ import {
   getFirestore,
   collection,
   addDoc,
-  getDocs,
-  onSnapshot,
-  doc,
-  updateDoc
+  onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -28,11 +25,14 @@ let points = 0;
 
 async function requestAccess() {
   const name = document.getElementById("username").value;
-  if (!name) return alert("Enter your name");
 
-  await addDoc(collection(db, "requests"), {
+  if (!name) {
+    alert("Enter your name");
+    return;
+  }
+
+  await addDoc(collection(db, "users"), {
     name: name,
-    approved: true,
     points: 0
   });
 
@@ -42,7 +42,6 @@ async function requestAccess() {
   document.getElementById("mainApp").classList.remove("hidden");
 
   loadMessages();
-  loadQuestion();
 }
 
 window.requestAccess = requestAccess;
@@ -51,6 +50,7 @@ window.requestAccess = requestAccess;
 
 async function sendMessage() {
   const text = document.getElementById("messageInput").value;
+
   if (!text) return;
 
   await addDoc(collection(db, "chat"), {
@@ -69,9 +69,12 @@ function loadMessages() {
 
   onSnapshot(collection(db, "chat"), (snapshot) => {
     messagesDiv.innerHTML = "";
+
     snapshot.forEach(doc => {
       const msg = doc.data();
-      messagesDiv.innerHTML += <p><b>${msg.user}:</b> ${msg.text}</p>;
+      messagesDiv.innerHTML += 
+        <p><b>${msg.user}:</b> ${msg.text}</p>
+      ;
     });
   });
 }
@@ -85,7 +88,7 @@ const questions = [
     correct: 0
   },
   {
-    q: "How many vertebrae in cervical spine?",
+    q: "How many cervical vertebrae?",
     answers: ["5", "7", "12"],
     correct: 1
   }
@@ -112,12 +115,13 @@ function checkAnswer(index) {
   if (index === questions[currentQuestion].correct) {
     points += 10;
     document.getElementById("points").innerText = points;
-    alert("Correct 👑 +10 points");
+    alert("Correct 👑 +10");
   } else {
     alert("Wrong ❌");
   }
 
   currentQuestion++;
+
   if (currentQuestion < questions.length) {
     loadQuestion();
   } else {
@@ -125,26 +129,23 @@ function checkAnswer(index) {
   }
 }
 
-/* ================= NAVIGATION ================= */
-
-function showSection(id) {
+window.showSection = function (id) {
   document.querySelectorAll(".section").forEach(sec =>
     sec.classList.add("hidden")
   );
-  document.getElementById(id).classList.remove("hidden");
-}
 
-window.showSection = showSection;
+  document.getElementById(id).classList.remove("hidden");
+
+  if (id === "quiz") loadQuestion();
+};
 
 /* ================= SOS ================= */
 
-async function sendSOS() {
+window.sendSOS = async function () {
   await addDoc(collection(db, "sos"), {
     user: currentUser,
     time: Date.now()
   });
 
-  alert("🚨 SOS Sent to Admin!");
-}
-
-window.sendSOS = sendSOS;
+  alert("🚨 SOS Sent!");
+};
