@@ -1,19 +1,7 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+let currentUser = "";
+let points = 0;
 
-const firebaseConfig = {
-  apiKey: "PUT_YOUR_API_KEY",
-  authDomain: "PUT_YOUR_AUTH_DOMAIN",
-  projectId: "PUT_YOUR_PROJECT_ID",
-  storageBucket: "PUT_YOUR_STORAGE_BUCKET",
-  messagingSenderId: "PUT_YOUR_SENDER_ID",
-  appId: "PUT_YOUR_APP_ID"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-window.requestAccess = async function () {
+function login() {
   const name = document.getElementById("username").value;
 
   if (!name) {
@@ -21,15 +9,72 @@ window.requestAccess = async function () {
     return;
   }
 
-  try {
-    await addDoc(collection(db, "requests"), {
-      name: name,
-      createdAt: new Date()
-    });
+  currentUser = name;
+  document.getElementById("loginPage").classList.add("hidden");
+  document.getElementById("mainApp").classList.remove("hidden");
+}
 
-    alert("Request Sent ✅");
-    document.getElementById("username").value = "";
-  } catch (error) {
-    alert("Error: " + error.message);
+function showSection(id) {
+  document.querySelectorAll(".section").forEach(sec => {
+    sec.classList.add("hidden");
+  });
+
+  document.getElementById(id).classList.remove("hidden");
+}
+
+function sendMessage() {
+  const input = document.getElementById("chatInput");
+  const msg = input.value;
+
+  if (!msg) return;
+
+  const chatBox = document.getElementById("chatBox");
+  chatBox.innerHTML += <p><b>${currentUser}:</b> ${msg}</p>;
+  input.value = "";
+}
+
+const questions = [
+  {
+    question: "What does PT stand for?",
+    answers: ["Physical Therapy", "Personal Training", "Power Training"],
+    correct: 0
+  },
+  {
+    question: "Which muscle extends the knee?",
+    answers: ["Hamstring", "Quadriceps", "Gluteus"],
+    correct: 1
   }
-};
+];
+
+let currentQuestion = 0;
+
+function loadQuestion() {
+  const q = questions[currentQuestion];
+  document.getElementById("questionText").innerText = q.question;
+
+  const answersDiv = document.getElementById("answers");
+  answersDiv.innerHTML = "";
+
+  q.answers.forEach((answer, index) => {
+    const btn = document.createElement("button");
+    btn.innerText = answer;
+    btn.onclick = () => checkAnswer(index);
+    answersDiv.appendChild(btn);
+  });
+}
+
+function checkAnswer(index) {
+  if (index === questions[currentQuestion].correct) {
+    points++;
+    document.getElementById("points").innerText = points;
+  }
+
+  currentQuestion++;
+  if (currentQuestion < questions.length) {
+    loadQuestion();
+  } else {
+    alert("Quiz Finished 🎉");
+  }
+}
+
+loadQuestion();
