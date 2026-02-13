@@ -43,7 +43,7 @@ window.requestAccess = async function () {
   currentUser = name;
 
   // save request to firestore
-  await addDoc(collection(db, "requests"), {
+  await addDoc(collection(db, "Request Access"), {
     name: name,
     createdAt: new Date()
   });
@@ -159,3 +159,4 @@ window.sendAlert = async function () {
 
   alert("Emergency Alert Sent 🚨");
 };
+
