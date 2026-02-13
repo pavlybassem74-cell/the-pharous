@@ -11,7 +11,7 @@ const firebaseConfig = {
   appId: "YOUR_APP_ID"
 };
 
-const app = initializeApp(firebaseConfig);
+lest app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // ================= LOGIN =================
@@ -38,7 +38,7 @@ window.requestAccess = async function () {
 };
 // ================= LOGIN =================
 
-const app = initializeApp(firebaseConfig);
+let app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 window.requestAccess = async function () {
@@ -100,6 +100,7 @@ onSnapshot(chatRef, (snapshot) => {
     chatBox.innerHTML += <p><b>${data.name}:</b> ${data.message}</p>;
   });
 });
+
 
 
 
