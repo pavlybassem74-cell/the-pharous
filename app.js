@@ -109,3 +109,16 @@ window.alertGroup = async function() {
     createdAt: new Date()
   });
 };
+
+function requestAccess() {
+    const name = document.getElementById("username").value;
+
+    if (!name) {
+        alert("Please enter your name");
+        return;
+    }
+
+    alert("Request sent successfully 👑");
+}
+
+window.requestAccess = requestAccess;
