@@ -1,124 +1,150 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, onSnapshot, updateDoc, doc, query, orderBy } 
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  onSnapshot,
+  doc,
+  updateDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
+  authDomain: "the-pharous.firebaseapp.com",
+  projectId: "the-pharous",
+  storageBucket: "the-pharous.appspot.com",
+  messagingSenderId: "YOUR_ID",
+  appId: "YOUR_APP_ID"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 let currentUser = "";
-let currentPoints = 0;
+let points = 0;
 
-window.requestAccess = async function() {
+/* ================= LOGIN ================= */
+
+async function requestAccess() {
   const name = document.getElementById("username").value;
-  if (!name) return alert("اكتب اسمك");
+  if (!name) return alert("Enter your name");
 
-  await addDoc(collection(db, "users"), {
+  await addDoc(collection(db, "requests"), {
     name: name,
-    points: 0,
-    approved: true
+    approved: true,
+    points: 0
   });
 
   currentUser = name;
+
   document.getElementById("loginPage").classList.add("hidden");
   document.getElementById("mainApp").classList.remove("hidden");
-  document.getElementById("welcome").innerText = "Welcome " + name;
-  loadChat();
-  loadLeaderboard();
-  loadQuiz();
-};
 
-window.showSection = function(id) {
-  document.querySelectorAll(".section").forEach(s => s.classList.add("hidden"));
-  document.getElementById(id).classList.remove("hidden");
-};
-
-window.sendMessage = async function() {
-  const msg = document.getElementById("messageInput").value;
-  if (!msg) return;
-
-  await addDoc(collection(db, "messages"), {
-    name: currentUser,
-    text: msg,
-    createdAt: new Date()
-  });
-
-  document.getElementById("messageInput").value = "";
-};
-
-function loadChat() {
-  const q = query(collection(db, "messages"), orderBy("createdAt"));
-  onSnapshot(q, snapshot => {
-    const chatBox = document.getElementById("chatBox");
-    chatBox.innerHTML = "";
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      chatBox.innerHTML += <p><b>${data.name}:</b> ${data.text}</p>;
-    });
-  });
-}
-
-function loadLeaderboard() {
-  const q = query(collection(db, "users"), orderBy("points", "desc"));
-  onSnapshot(q, snapshot => {
-    const box = document.getElementById("leaderboardBox");
-    box.innerHTML = "";
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      box.innerHTML += <p>${data.name} - ${data.points} pts</p>;
-    });
-  });
-}
-
-function loadQuiz() {
-  const quizBox = document.getElementById("quizBox");
-  quizBox.innerHTML = 
-    <h3>كم عدد فقرات العمود الفقري؟</h3>
-    <button onclick="answerQuiz(33)">33</button>
-    <button onclick="answerQuiz(24)">24</button>
-  ;
-}
-
-window.answerQuiz = async function(answer) {
-  if (answer == 33) {
-    alert("صح 👏 +10 نقاط");
-    currentPoints += 10;
-
-    const snapshot = await getDocs(collection(db, "users"));
-    snapshot.forEach(async d => {
-      if (d.data().name === currentUser) {
-        await updateDoc(doc(db, "users", d.id), {
-          points: currentPoints
-        });
-      }
-    });
-  } else {
-    alert("غلط ❌");
-  }
-};
-
-window.alertGroup = async function() {
-  await addDoc(collection(db, "messages"), {
-    name: "🚨 ALERT",
-    text: currentUser + " يحتاج مساعدة!",
-    createdAt: new Date()
-  });
-};
-
-function requestAccess() {
-    const name = document.getElementById("username").value;
-
-    if (!name) {
-        alert("Please enter your name");
-        return;
-    }
-
-    alert("Request sent successfully 👑");
+  loadMessages();
+  loadQuestion();
 }
 
 window.requestAccess = requestAccess;
+
+/* ================= CHAT ================= */
+
+async function sendMessage() {
+  const text = document.getElementById("messageInput").value;
+  if (!text) return;
+
+  await addDoc(collection(db, "chat"), {
+    user: currentUser,
+    text: text,
+    time: Date.now()
+  });
+
+  document.getElementById("messageInput").value = "";
+}
+
+window.sendMessage = sendMessage;
+
+function loadMessages() {
+  const messagesDiv = document.getElementById("messages");
+
+  onSnapshot(collection(db, "chat"), (snapshot) => {
+    messagesDiv.innerHTML = "";
+    snapshot.forEach(doc => {
+      const msg = doc.data();
+      messagesDiv.innerHTML += <p><b>${msg.user}:</b> ${msg.text}</p>;
+    });
+  });
+}
+
+/* ================= QUIZ ================= */
+
+const questions = [
+  {
+    q: "What is the largest bone in the human body?",
+    answers: ["Femur", "Humerus", "Tibia"],
+    correct: 0
+  },
+  {
+    q: "How many vertebrae in cervical spine?",
+    answers: ["5", "7", "12"],
+    correct: 1
+  }
+];
+
+let currentQuestion = 0;
+
+function loadQuestion() {
+  const q = questions[currentQuestion];
+  document.getElementById("questionText").innerText = q.q;
+
+  const answersDiv = document.getElementById("answers");
+  answersDiv.innerHTML = "";
+
+  q.answers.forEach((answer, index) => {
+    const btn = document.createElement("button");
+    btn.innerText = answer;
+    btn.onclick = () => checkAnswer(index);
+    answersDiv.appendChild(btn);
+  });
+}
+
+function checkAnswer(index) {
+  if (index === questions[currentQuestion].correct) {
+    points += 10;
+    document.getElementById("points").innerText = points;
+    alert("Correct 👑 +10 points");
+  } else {
+    alert("Wrong ❌");
+  }
+
+  currentQuestion++;
+  if (currentQuestion < questions.length) {
+    loadQuestion();
+  } else {
+    alert("Quiz Finished 🔥");
+  }
+}
+
+/* ================= NAVIGATION ================= */
+
+function showSection(id) {
+  document.querySelectorAll(".section").forEach(sec =>
+    sec.classList.add("hidden")
+  );
+  document.getElementById(id).classList.remove("hidden");
+}
+
+window.showSection = showSection;
+
+/* ================= SOS ================= */
+
+async function sendSOS() {
+  await addDoc(collection(db, "sos"), {
+    user: currentUser,
+    time: Date.now()
+  });
+
+  alert("🚨 SOS Sent to Admin!");
+}
+
+window.sendSOS = sendSOS;
