@@ -1,70 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Pharos</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Pharos</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- LOGIN -->
-  <div id="loginPage" class="card">
-    <h1>The Pharous 👑</h1>
-    <input type="text" id="username" placeholder="Enter your name" />
-  <button onclick="requestAccess()">Request Access</button>
-  </div>
-<script>
-function testClick(){
-  alert("Button Works ✅");
-}
-</script>
-  <!-- MAIN APP -->
-  <div id="mainApp" class="hidden">
+<!-- LOGIN -->
+<div id="loginPage" class="card">
+  <h1>The Pharos 🔥</h1>
+  <input type="text" id="username" placeholder="Enter your name">
+  <button onclick="login()">Request Access</button>
+</div>
 
-    <h2>Welcome to The Pharos 🔥</h2>
+<!-- MAIN APP -->
+<div id="mainApp" class="hidden">
 
-    <div class="tabs">
-      <button onclick="showSection('chat')">💬 Chat</button>
-      <button onclick="showSection('quiz')">🧠 Quiz</button>
-      <button onclick="showSection('map')">📍 Map</button>
-      <button onclick="sendSOS()">🚨 SOS</button>
-    </div>
+  <h2>Welcome to The Pharos 🌅</h2>
 
-    <!-- CHAT -->
-    <div id="chat" class="section">
-      <div id="messages"></div>
-      <input type="text" id="messageInput" placeholder="Write message..." />
-      <button onclick="sendMessage()">Send</button>
-    </div>
-
-    <!-- QUIZ -->
-    <div id="quiz" class="section hidden">
-      <h3 id="questionText"></h3>
-      <div id="answers"></div>
-      <p>Points: <span id="points">0</span></p>
-    </div>
-
-    <!-- MAP -->
-    <div id="map" class="section hidden">
-      <iframe
-        src="https://www.google.com/maps?q=Petra,Jordan&output=embed"
-        width="100%"
-        height="300"
-        style="border:0;"
-        allowfullscreen=""
-        loading="lazy">
-      </iframe>
-    </div>
-
+  <div class="tabs">
+    <button onclick="showSection('chat')">💬 Chat</button>
+    <button onclick="showSection('quiz')">🧠 Quiz</button>
+    <button onclick="showSection('map')">📍 Map</button>
   </div>
 
-<script type="module" src="./app.js"></script>
+  <!-- CHAT -->
+  <div id="chat" class="section">
+    <div id="chatBox"></div>
+    <input type="text" id="chatInput" placeholder="Type message">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz" class="section hidden">
+    <h3 id="questionText"></h3>
+    <div id="answers"></div>
+    <p>Points: <span id="points">0</span></p>
+  </div>
+
+  <!-- MAP -->
+  <div id="map" class="section hidden">
+    <iframe 
+      src="https://www.google.com/maps?q=Petra,Jordan&output=embed"
+      width="100%" 
+      height="300" 
+      style="border:0;">
+    </iframe>
+  </div>
+
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
-
-
-
-
-
-
