@@ -7,12 +7,12 @@ body {
 }
 
 .card {
-  margin-top: 120px;
+  margin-top: 100px;
 }
 
 input {
   padding: 10px;
-  width: 220px;
+  margin: 5px;
   border-radius: 8px;
   border: none;
 }
@@ -27,23 +27,22 @@ button {
   font-weight: bold;
 }
 
-.hidden {
-  display: none;
-}
-
-.tabs button {
-  background: #222;
-  color: gold;
+.tabs {
+  margin: 15px;
 }
 
 .section {
   margin-top: 20px;
 }
 
-#messages {
-  max-height: 200px;
+.hidden {
+  display: none;
+}
+
+#chatBox {
+  height: 200px;
   overflow-y: auto;
-  background: #222;
+  border: 1px solid gold;
+  margin: 10px;
   padding: 10px;
-  border-radius: 8px;
 }
