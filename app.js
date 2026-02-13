@@ -1,46 +1,52 @@
-// Firebase v10 Modular
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
 import { 
   getFirestore, 
   collection, 
-  addDoc, 
-  getDocs, 
-  onSnapshot,
-  doc,
-  updateDoc 
+  addDoc 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-// 🔥 حط بيانات Firebase بتاعتك هنا
 const firebaseConfig = {
-  apiKey: "PUT_YOUR_API_KEY",
-  authDomain: "the-pharous.firebaseapp.com",
-  projectId: "the-pharous",
-  storageBucket: "the-pharous.appspot.com",
-  messagingSenderId: "PUT_YOUR_ID",
-  appId: "PUT_YOUR_APP_ID"
+  apiKey: "PUT_YOUR_API_KEY_HERE",
+  authDomain: "PUT_YOUR_AUTH_DOMAIN_HERE",
+  projectId: "PUT_YOUR_PROJECT_ID_HERE",
+  storageBucket: "PUT_YOUR_STORAGE_BUCKET_HERE",
+  messagingSenderId: "PUT_YOUR_SENDER_ID_HERE",
+  appId: "PUT_YOUR_APP_ID_HERE"
 };
+// ================= LOGIN =================
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// ================= LOGIN =================
-
 window.requestAccess = async function () {
-  const name = document.getElementById("username").value;
+
+  const nameInput = document.getElementById("username");
+  const name = nameInput.value.trim();
 
   if (!name) {
-    alert("Enter your name first");
+    alert("Please enter your name first 👑");
     return;
   }
 
-  await addDoc(collection(db, "requests"), {
-    name: name,
-    createdAt: new Date()
-  });
+  try {
 
-  alert("Request Sent 👑");
+    await addDoc(collection(db, "requests"), {
+      name: name,
+      createdAt: new Date(),
+      status: "pending"
+    });
+
+    alert("Request Sent Successfully ✅");
+
+    nameInput.value = "";
+
+  } catch (error) {
+
+    console.error("Error adding document: ", error);
+    alert("Something went wrong ❌ Check console");
+
+  }
 };
-
 // ================= CHAT =================
 
 window.sendMessage = async function () {
@@ -71,3 +77,4 @@ onSnapshot(chatRef, (snapshot) => {
     chatBox.innerHTML += <p><b>${data.name}:</b> ${data.message}</p>;
   });
 });
+
